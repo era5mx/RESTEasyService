@@ -1,0 +1,147 @@
+version='0.0.1'
+
+description = """\
+Simple Gradle project to show how we can use RESTEasy.
+------------------------------------------
+Project version: ${version}
+Gradle version: ${gradle.gradleVersion}
+------------------------------------------
+"""
+
+group='mx.com.extend.semarnat.foresta'
+
+//loading 'com.oracle:ojdbc14:10.2.0.5.0'
+buildscript {
+    repositories {
+        flatDir {
+            dirs 'C:/Program Files/Java'
+        }
+    }
+
+    dependencies {
+        classpath 'com.oracle:ojdbc14:10.2.0.5.0'
+    }
+}
+
+apply plugin: 'eclipse'
+apply plugin: 'java'
+apply plugin: 'war'
+
+repositories {
+   jcenter()
+   maven {
+    url 'http://repository.jboss.org/nexus/content/groups/public'
+   }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ["src/main/java"]
+        }
+    }
+    test {
+        java {
+            srcDirs = ["src/test/java"]
+        }
+    }
+}
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+ext.deps = [
+    jaxrsVersion: '3.0.12.Final',
+    resteasyVersion: '3.0.13.Final',
+    hibernateVersion: '5.0.1.Final',
+    slf4jVersion: '1.7.12'
+]
+
+List restEasyList = [
+    'javax.enterprise:cdi-api:2.0-EDR1',
+	'org.jboss.spec:jboss-javaee-7.0:1.0.3.Final',
+	'org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec:1.0.0.Final',
+	'org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec:1.0.0.Final',
+	'org.jboss.resteasy:jaxrs-api:'+deps.jaxrsVersion,
+	'org.jboss.resteasy:resteasy-jaxrs:'+deps.resteasyVersion,
+	'org.jboss.resteasy:resteasy-client:'+deps.resteasyVersion,
+	'org.jboss.resteasy:resteasy-jaxb-provider:'+deps.resteasyVersion,
+	'org.jboss.resteasy:resteasy-multipart-provider:'+deps.resteasyVersion
+]
+
+List restEasyJSList = [
+    'com.thetransactioncompany:cors-filter:2.4',
+    'org.jboss.resteasy:resteasy-jsapi:'+deps.resteasyVersion
+]
+
+List hibernateJPAList = [
+    'org.ow2.asm:asm:5.0.4',
+    'dom4j:dom4j:1.6.1',
+    'org.javassist:javassist:3.20.0-GA',
+    'javax.transaction:jta:1.1',
+    'org.wildfly:wildfly-jpa-hibernate3:8.0.0.Alpha1',
+    'org.wildfly:jipijapa-hibernate5:10.0.0.CR1',
+    'org.hibernate:ejb3-persistence:1.0.2.GA',
+    'org.hibernate:hibernate-annotations:3.5.6-Final',
+    'org.hibernate:hibernate-commons-annotations:3.2.0.Final',
+    'org.hibernate:hibernate-core:'+deps.hibernateVersion,
+    'org.hibernate:hibernate-entitymanager:'+deps.hibernateVersion,
+    'org.hibernate:hibernate-gradle-plugin:'+deps.hibernateVersion
+]
+
+List commonList = [
+	'commons-io:commons-io:2.4',
+	'commons-logging:commons-logging:1.2',
+	'org.apache.commons:commons-lang3:3.4',
+	'org.apache.commons:commons-collections4:4.0',
+	'commons-codec:commons-codec:1.10',
+	'org.codehaus.jettison:jettison:1.1',
+	'com.google.code.gson:gson:2.3.1',
+]
+
+List log4jList = [
+    'log4j:log4j:1.2.17',
+    'org.slf4j:slf4j-api:'+deps.slf4jVersion,
+    'org.slf4j:slf4j-simple:'+deps.slf4jVersion,
+    'org.slf4j:jcl-over-slf4j:'+deps.slf4jVersion
+]
+
+dependencies {
+    compile log4jList
+    compile commonList, restEasyList
+    //compile restEasyJSList
+    compile hibernateJPAList
+    testCompile 'junit:junit:4.12'
+}
+
+defaultTasks 'clean', 'cleanEclipse', 'eclipse', 'build'
+
+war {
+    from 'WebContent' // adds a file-set to the root of the archive
+
+    manifest {
+        attributes 'Manifest-Version': ManifestVersion,
+                   // 'Main-Class': mainClass,
+                   'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                   'Bundle-Description': BundleDescription,
+                   'Implementation-Title': project.name,
+                   'Implementation-Version': project.version,
+                   'Implementation-Vendor': ImplementationVendor,
+                   'Built-By': System.getProperty('user.name'),
+                   'Built-JDK': System.getProperty('java.version')+' ('+System.getProperty('java.vendor')+')',
+                   'Build-Time': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                   'Source-Compatibility': project.sourceCompatibility,
+                   'Target-Compatibility': project.targetCompatibility
+    }
+
+}
+
+task sampleTest(type: Test, dependsOn: testClasses) {
+    include '**/*Test*'
+}
+
+tasks.withType(Test) {
+    testLogging {
+        events 'started', 'passed'
+    }
+}

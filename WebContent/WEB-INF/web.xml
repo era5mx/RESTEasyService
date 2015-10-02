@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	id="WebApp_ID" version="3.1">
+
+	<display-name>RESTEasyService</display-name>
+
+	<!-- Auto scan REST service -->
+	<context-param>
+		<param-name>resteasy.scan</param-name>
+		<param-value>true</param-value>
+	</context-param>
+
+    <!-- Manual configuration REST service -->
+	<context-param>
+		<param-name>javax.ws.rs.Application</param-name>
+		<param-value>mx.com.extend.semarnat.foresta.app.ApplicationConfiguration</param-value>
+	</context-param>
+
+	<!-- this need same with resteasy servlet url-pattern -->
+	<context-param>
+		<param-name>resteasy.servlet.mapping.prefix</param-name>
+		<param-value>/rs</param-value>
+	</context-param>
+
+    <!-- Listener -->
+	<listener>
+		<listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
+	</listener>
+
+    <!-- ServletDispatcher -->
+	<servlet>
+		<servlet-name>Resteasy</servlet-name>
+		<servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+    <servlet-mapping>
+        <servlet-name>Resteasy</servlet-name>
+        <url-pattern>/rs/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- JSAPI // servlet required for js clients // Required enable compile restEasyJSList in build.gradle (line 83)
+	<servlet>
+		<servlet-name>resteasy-jsapi</servlet-name>
+		<servlet-class>org.jboss.resteasy.jsapi.JSAPIServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>resteasy-jsapi</servlet-name>
+		<url-pattern>/rest-api.js</url-pattern>
+	</servlet-mapping>
+    -->
+
+    <!-- CORS Filter mapping // use only one option -->
+    <!-- Option: CORS Filter
+    <filter>
+        <filter-name>CORS</filter-name>
+        <filter-class>mx.com.extend.semarnat.foresta.util.CrossDomainFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CORS</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    -->
+
+    <!-- Option: APIman CORS Filter
+    <filter>
+        <filter-name>CORS</filter-name>
+        <filter-class>mx.com.extend.semarnat.foresta.util.ApimanCorsFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CORS</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    -->
+
+    <!-- Option: thetransactioncompany CORS Filter
+    <filter>
+        <filter-name>CORS</filter-name>
+        <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
+
+        <init-param>
+            <param-name>cors.allowGenericHttpRequests</param-name>
+            <param-value>true</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>cors.allowOrigin</param-name>
+            <param-value>*</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>cors.allowSubdomains</param-name>
+            <param-value>true</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>cors.supportedMethods</param-name>
+            <param-value>GET, HEAD, POST, DELETE, OPTIONS</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>cors.supportedHeaders</param-name>
+            <param-value>*</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>cors.supportsCredentials</param-name>
+            <param-value>true</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>cors.maxAge</param-name>
+            <param-value>3600</param-value>
+        </init-param>
+
+    </filter>
+    <filter-mapping>
+        <filter-name>CORS</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    -->
+
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+
+	<welcome-file-list>
+		<!-- welcome-file>index.html</welcome-file -->
+		<!-- welcome-file>index.htm</welcome-file -->
+		<welcome-file>index.jsp</welcome-file>
+		<!-- welcome-file>default.html</welcome-file -->
+		<!-- welcome-file>default.htm</welcome-file -->
+		<!-- welcome-file>default.jsp</welcome-file -->
+	</welcome-file-list>
+
+</web-app>
